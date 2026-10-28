@@ -1,3 +1,5 @@
 # Source/design images not used by the live site
 *.png
 *.jpg
+!favicon-*.png
+!apple-touch-icon.png
