@@ -441,15 +441,26 @@ input{font:inherit;color:inherit;margin:0}
   .step h3{font-size:clamp(24px,2.3vw,32px);letter-spacing:-.03em}
   .step p{font-size:18px}
 }
-@media (max-width:1023px){
+.how-pin{display:contents}
+/* Phones and tablets: the stage pins and the page scroll steps through the six screens */
+@media (max-width:1023px) and (min-height:541px){
+  .how-grid{height:calc(430vh - var(--nav-h));height:calc(100svh - var(--nav-h) + 330svh)}
+  .how-pin{position:sticky;top:calc(var(--nav-h) + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;height:calc(100vh - var(--nav-h));height:calc(100svh - var(--nav-h) - env(safe-area-inset-top,0px));padding-block:10px 14px}
+  .how-stage{gap:8px}
+  .phone{width:min(280px,66vw,calc((100vh - var(--nav-h) - 244px) * .4615));width:min(280px,66vw,calc((100svh - var(--nav-h) - env(safe-area-inset-top,0px) - 244px) * .4615))}
   .how-dots{display:flex}
-  .steps{display:flex;gap:12px;margin-top:28px;margin-left:calc(-1 * max(var(--g),env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(var(--g),env(safe-area-inset-right,0px)));padding-left:max(var(--g),env(safe-area-inset-left,0px));padding-right:max(var(--g),env(safe-area-inset-right,0px));overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(var(--g),env(safe-area-inset-left,0px));overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .steps::-webkit-scrollbar{display:none}
+  .steps{width:100%;max-width:460px;height:148px}
   .rail{display:none}
-  .step{flex:0 0 min(84%,420px);scroll-snap-align:center;padding:24px 22px;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line);transition:box-shadow .4s var(--ease-ui)}
-  .step.is-active{box-shadow:0 0 0 1.5px var(--ink)}
-  .step .step-n::before{content:"";display:inline-block;width:7px;height:7px;margin-right:10px;border-radius:50%;background:var(--line-2);vertical-align:.1em;transition:background-color .3s}
-  .step.is-active .step-n::before{background:var(--lime);box-shadow:0 0 0 3px var(--lime-glow)}
+  .step{position:absolute;inset:0;text-align:center;opacity:0;transform:translate3d(0,10px,0);transition:opacity .35s var(--ease-ui),transform .6s var(--ease-out);pointer-events:none}
+  .step.is-active{opacity:1;transform:none}
+  .step-n{margin-right:10px}
+  .step h3{display:inline;margin:0;font-size:19px;letter-spacing:-.02em}
+  .step p{margin:8px auto 0;font-size:14.5px;line-height:1.45}
+}
+/* Very short screens (a phone on its side): no room to pin, so list the steps */
+@media (max-width:1023px) and (max-height:540px){
+  .steps{display:grid;gap:28px;margin-top:40px}
+  .rail{display:none}
 }
 
 /* ---------- Speed to lead ---------- */
@@ -770,6 +781,7 @@ input{font:inherit;color:inherit;margin:0}
 .dock{position:fixed;z-index:50;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:none;align-items:center;gap:12px;min-height:54px;padding:0 24px 0 20px;border-radius:999px;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:15.5px;font-weight:650;white-space:nowrap;box-shadow:0 20px 40px -14px var(--shade-3),0 0 0 1px var(--ink-3);transform:translate3d(-50%,170%,0);transition:transform .7s var(--ease-out)}
 .dock .bd{width:9px;height:9px;border-radius:50%;background:var(--lime)}
 .dock.show{transform:translate3d(-50%,0,0)}
+.how-pinned .dock.show{transform:translate3d(-50%,170%,0)}
 @media (max-width:1023px){.dock{display:inline-flex}}
 
 /* ---------- Scroll reveals (armed only below the fold, by script) ---------- */
@@ -911,7 +923,8 @@ input{font:inherit;color:inherit;margin:0}
       <p class="lead" data-reveal>Six steps we run every day, so the only thing left on your list is the appointment.</p>
     </div>
 
-    <div class="how-grid">
+    <div class="how-grid" id="how-grid">
+      <div class="how-pin" id="how-pin">
       <div class="how-stage">
         <div class="phone" id="phone" aria-hidden="true">
           <div class="ph-screen">
@@ -1039,6 +1052,7 @@ input{font:inherit;color:inherit;margin:0}
         <li class="step"><span class="step-n">05</span><h3 class="h3">Report before you meet</h3><p>Your team gets one page on the customer: what they need, their timeline, budget and notes from our call.</p></li>
         <li class="step"><span class="step-n">06</span><h3 class="h3">Scored every Monday</h3><p>Leads, booked, showed and sold, with cost per booked and cost per sold. Then a 15-minute call to keep you at setpoint.</p></li>
       </ol>
+      </div>
     </div>
   </div>
 </section>
@@ -1616,12 +1630,13 @@ input{font:inherit;color:inherit;margin:0}
     });
   }
 
-  /* ---------- How it works: sticky phone on desktop, swipeable cards on phones ---------- */
+  /* ---------- How it works: sticky phone on desktop, pinned stage on phones ---------- */
   const how = $("#how");
   if (how) {
     const steps = $$(".step", how), scrs = $$(".scr", how), dots = $$(".how-dots button", how);
-    const list = $("#steps"), rail = $(".rail", how), timerEl = $("[data-timer]", how);
-    let active = 0, tops = [], hs = [], rid = 0;
+    const rail = $(".rail", how), timerEl = $("[data-timer]", how);
+    const hgrid = $("#how-grid"), pin = $("#how-pin"), PIN = mm("(max-width: 1023px) and (min-height: 541px)");
+    let active = 0, tops = [], hs = [], p0 = 0, plen = 1;
     const runTimer = () => {
       if (!timerEl) return;
       if (RM) { timerEl.textContent = "00:38"; return; }
@@ -1641,8 +1656,15 @@ input{font:inherit;color:inherit;margin:0}
       dots.forEach((b, k) => b.setAttribute("aria-current", k === i ? "step" : "false"));
       if (i === 1) runTimer();
     };
-    onMeasure(() => { tops = steps.map(docTop); hs = steps.map(s => s.offsetHeight); });
+    onMeasure(() => {
+      tops = steps.map(docTop); hs = steps.map(s => s.offsetHeight);
+      // where the pinned stage starts sticking, and how far the page scrolls while it is stuck
+      p0 = docTop(hgrid) - (parseFloat(getComputedStyle(pin).top) || 0);
+      plen = Math.max(1, hgrid.offsetHeight - pin.offsetHeight);
+    });
     addTick((y, vh) => {
+      d.documentElement.classList.toggle("how-pinned", PIN.matches && y > p0 - vh * .5 && y < p0 + plen + vh * .2);
+      if (PIN.matches) { setActive(Math.floor(clamp((y - p0) / plen, 0, .9999) * steps.length)); return; }
       if (!DESK.matches || !tops.length) return;
       const mid = y + vh * 0.5;
       let best = 0, bd = Infinity;
@@ -1651,19 +1673,9 @@ input{font:inherit;color:inherit;margin:0}
       const first = tops[0] + hs[0] / 2, last = tops[tops.length - 1] + hs[hs.length - 1] / 2;
       rail.style.transform = "scaleY(" + clamp((mid - first) / Math.max(1, last - first), 0, 1).toFixed(4) + ")";
     });
-    list.addEventListener("scroll", () => {
-      if (DESK.matches) return;
-      cancelAnimationFrame(rid);
-      rid = requestAnimationFrame(() => {
-        const c = list.scrollLeft + list.clientWidth / 2;
-        let best = 0, bd = Infinity;
-        steps.forEach((s, k) => { const dd = Math.abs(s.offsetLeft + s.offsetWidth / 2 - c); if (dd < bd) { bd = dd; best = k; } });
-        setActive(best);
-      });
-    }, { passive: true });
     dots.forEach((b, k) => b.addEventListener("click", () => {
-      const s = steps[k];
-      list.scrollTo({ left: s.offsetLeft - (list.clientWidth - s.offsetWidth) / 2, behavior: RM ? "auto" : "smooth" });
+      if (!PIN.matches) return;
+      W.scrollTo({ top: p0 + (k + .5) / steps.length * plen, behavior: RM ? "auto" : "smooth" });
     }));
     steps.forEach((s, k) => s.addEventListener("click", () => {
       if (!DESK.matches) return;
