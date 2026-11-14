@@ -176,37 +176,46 @@ input{font:inherit;color:inherit;margin:0}
 @keyframes fadeUp{from{opacity:0;transform:translate3d(0,26px,0)}to{opacity:1;transform:none}}
 @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
 
-/* The instrument: a thermostat for booked appointments */
-.instrument{position:relative;width:100%;max-width:480px;justify-self:center}
+/* The instrument: a week calendar that fills with booked appointments */
+.instrument{position:relative;width:100%;max-width:480px;justify-self:center;padding-bottom:52px}
 @media (max-width:1023px){.instrument{max-width:400px;padding-bottom:64px}}
-.dial{position:relative;width:100%;aspect-ratio:1;container-type:inline-size}
-.dial-face{position:absolute;inset:3.5%;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1px var(--line),0 44px 80px -46px var(--shade-3),0 18px 36px -28px var(--shade-2)}
-.dial-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.d-arc{fill:none;stroke:var(--line);stroke-width:1.5}
-.tk{stroke:var(--ghost);stroke-width:2.2;stroke-linecap:round;transition:stroke .3s var(--ease-ui)}
-.tk.u{stroke-width:2.6}
-.tk.mj{stroke-width:3}
-.tk.on{stroke:var(--ink)}
-.d-lab{font-family:var(--mono);font-size:13px;font-weight:450;letter-spacing:.04em;fill:var(--faint)}
-.sp-dot{fill:var(--lime);stroke:var(--ink);stroke-width:2.5}
-.sp-halo{fill:var(--lime);opacity:0;transform-box:fill-box;transform-origin:center}
-.holding .sp-halo{animation:halo 2.6s var(--ease-out) infinite}
+.wk{position:relative;container-type:inline-size;padding:22px 22px 24px;border-radius:28px;background:var(--surface);box-shadow:0 0 0 1px var(--line),0 44px 80px -46px var(--shade-3),0 18px 36px -28px var(--shade-2)}
+.wk-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.wk-title{display:block;margin-top:9px;font-family:var(--display);font-size:clamp(19px,5.4cqi,26px);font-weight:700;letter-spacing:-.03em;line-height:1.1;white-space:nowrap}
+.wk-count{display:flex;align-items:center;gap:10px;margin:0}
+.wk-count b{min-width:1.15em;font-family:var(--display);font-weight:300;font-size:clamp(40px,12.5cqi,60px);line-height:.85;letter-spacing:-.05em;font-variant-numeric:tabular-nums;text-align:right}
+.wk-count small{font-size:12px;line-height:1.25;color:var(--graphite)}
+.wk-bar{position:relative;height:4px;margin-top:20px;border-radius:2px;background:var(--line)}
+.wk-bar i{position:absolute;inset:0 auto 0 0;width:calc(var(--p,0) * 100%);border-radius:2px;background:var(--ink);transition:width .7s var(--ease-out)}
+.wk-bar b,.wk-bar b::after{position:absolute;right:-6px;top:-4px;width:12px;height:12px;border-radius:50%;background:var(--lime)}
+.wk-bar b{box-shadow:0 0 0 2px var(--ink)}
+.wk-bar b::after{content:"";inset:0;opacity:0}
+.wk.holding .wk-bar b::after{animation:halo 2.6s var(--ease-out) infinite}
 @keyframes halo{0%{opacity:.55;transform:scale(.7)}100%{opacity:0;transform:scale(2.6)}}
-#sp-marker{transition:transform .6s var(--ease-out)}
-.dial-read{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:2cqi}
-.dr-top{font-size:11px;font-size:max(10px,2.4cqi);gap:2cqi}
-.dr-row{display:flex;align-items:center;gap:4.5cqi;margin-top:3cqi}
-.dr-num{min-width:1.24em;font-family:var(--display);font-weight:300;font-size:90px;font-size:24cqi;line-height:.9;letter-spacing:-.06em;font-variant-numeric:tabular-nums;color:var(--ink)}
-.dr-unit{margin-top:2.6cqi;font-size:13px;font-size:max(12px,3.1cqi);line-height:1.3;color:var(--graphite)}
-.dc{display:grid;place-items:center;width:44px;height:44px;width:max(44px,9.5cqi);height:max(44px,9.5cqi);border-radius:50%;box-shadow:inset 0 0 0 1px var(--line-2);color:var(--ink);transition:box-shadow .25s var(--ease-ui),background-color .25s var(--ease-ui),transform .3s var(--ease-out)}
-.dc svg{width:16px;height:16px}
-.dc:active{transform:scale(.92)}
-.dc:disabled{opacity:.35}
-@media (hover:hover){.dc:not(:disabled):hover{background:var(--ink);color:var(--paper);box-shadow:none}}
-.dr-state{margin-top:3.2cqi;font-size:10px;font-size:max(9.5px,2.1cqi);letter-spacing:.12em;color:var(--faint);transition:color .3s var(--ease-ui)}
-.holding .dr-state{color:var(--ink)}
+.wk-meta{display:flex;justify-content:space-between;gap:12px;margin-top:11px}
+.wk-meta .label{font-size:10px;letter-spacing:.12em;color:var(--faint);transition:color .3s var(--ease-ui)}
+.wk.holding #wk-state{color:var(--ink)}
+.wk-days{display:grid;grid-template-columns:repeat(5,1fr);margin:18px 0 8px 28px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;text-align:center;color:var(--faint)}
+.wk-body{display:grid;grid-template-columns:28px minmax(0,1fr)}
+.wk-hrs{position:relative;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.wk-hrs span{position:absolute;left:0;top:calc(var(--k) * 25%);transform:translateY(-50%)}
+.wk-hrs span:first-child{transform:none}
+.wk-hrs span:last-child{transform:translateY(-100%)}
+.wk-grid{position:relative;height:300px;height:62cqi;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line);background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 12.5%,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/20% 100%}
+.bk{position:absolute;left:calc(var(--c) * 20% + 3px);width:calc(20% - 5px);top:calc(var(--r) * 6.25% + 3px);height:calc(var(--h) * 6.25% - 5px);border-radius:7px}
+.bk.busy{background:repeating-linear-gradient(135deg,var(--paper-2) 0 5px,var(--paper) 5px 10px);box-shadow:inset 0 0 0 1px var(--line)}
+.bk.on{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:3px 6px 3px 9px;overflow:hidden;background:var(--lime-wash);box-shadow:inset 3px 0 0 var(--ink);transition:background-color .8s var(--ease-ui)}
+.bk.on.new{background:var(--lime)}
+.bk b{font-family:var(--display);font-weight:700;font-size:10px;font-size:max(9.5px,2.3cqi);line-height:1.15;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk small{font-family:var(--mono);font-size:9px;font-size:max(8.5px,1.9cqi);line-height:1.15;color:var(--graphite);white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){
+  .bk{animation:bkIn .75s var(--ease-out) both}
+  .bk.out{animation:bkOut .4s var(--ease-ui) both;animation-delay:calc(var(--k,0) * 35ms)}
+}
+@keyframes bkIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes bkOut{to{opacity:0;transform:translate3d(0,8px,0) scale(.92)}}
 
-.toasts{position:absolute;left:-7%;bottom:3%;width:min(316px,80%);height:72px;pointer-events:none}
+.toasts{position:absolute;left:-7%;bottom:0;width:min(316px,80%);height:72px;pointer-events:none}
 @media (max-width:1023px){.toasts{left:50%;bottom:0;width:min(330px,94%);transform:translateX(-50%)}}
 .toast{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line),0 18px 40px -18px var(--shade-3);transform:translate3d(0,calc(var(--i,0) * 11px),0) scale(calc(1 - var(--i,0) * .05));opacity:calc(1 - var(--i,0) * .3);transition:transform .75s var(--ease-out),opacity .5s var(--ease-ui)}
 .toast>*{transition:opacity .35s var(--ease-ui)}
@@ -833,18 +842,17 @@ input{font:inherit;color:inherit;margin:0}
     </div>
 
     <div class="instrument">
-      <div class="dial holding" id="dial" role="group" aria-label="Set a monthly target for booked appointments">
-        <div class="dial-face"></div>
-        <svg class="dial-svg" viewBox="0 0 600 600" aria-hidden="true"><path class="d-arc" d="M123.22 476.78A250 250 0 1 1 476.78 476.78"/><line class="tk mj on" data-v="0" x1="155.75" y1="444.25" x2="131.71" y2="468.29"/><line class="tk on" data-v="0.5" x1="128.39" y1="440.84" x2="117.57" y2="449.72"/><line class="tk u on" data-v="1" x1="122.07" y1="418.89" x2="102.11" y2="432.23"/><line class="tk on" data-v="1.5" x1="104.21" y1="404.65" x2="91.87" y2="411.25"/><line class="tk u on" data-v="2" x1="102.29" y1="381.89" x2="80.12" y2="391.08"/><line class="tk on" data-v="2.5" x1="87.56" y1="364.44" x2="74.16" y2="368.51"/><line class="tk u on" data-v="3" x1="90.11" y1="341.75" x2="66.57" y2="346.43"/><line class="tk on" data-v="3.5" x1="79.07" y1="321.76" x2="65.14" y2="323.13"/><line class="tk u on" data-v="4" x1="86" y1="300" x2="62" y2="300"/><line class="tk on" data-v="4.5" x1="79.07" y1="278.24" x2="65.14" y2="276.87"/><line class="tk u on" data-v="5" x1="90.11" y1="258.25" x2="66.57" y2="253.57"/><line class="tk on" data-v="5.5" x1="87.56" y1="235.56" x2="74.16" y2="231.49"/><line class="tk mj on" data-v="6" x1="111.53" y1="221.93" x2="80.12" y2="208.92"/><line class="tk on" data-v="6.5" x1="104.21" y1="195.35" x2="91.87" y2="188.75"/><line class="tk u on" data-v="7" x1="122.07" y1="181.11" x2="102.11" y2="167.77"/><line class="tk on" data-v="7.5" x1="128.39" y1="159.16" x2="117.57" y2="150.28"/><line class="tk u on" data-v="8" x1="148.68" y1="148.68" x2="131.71" y2="131.71"/><line class="tk on" data-v="8.5" x1="159.16" y1="128.39" x2="150.28" y2="117.57"/><line class="tk u on" data-v="9" x1="181.11" y1="122.07" x2="167.77" y2="102.11"/><line class="tk on" data-v="9.5" x1="195.35" y1="104.21" x2="188.75" y2="91.87"/><line class="tk u on" data-v="10" x1="218.11" y1="102.29" x2="208.92" y2="80.12"/><line class="tk on" data-v="10.5" x1="235.56" y1="87.56" x2="231.49" y2="74.16"/><line class="tk u on" data-v="11" x1="258.25" y1="90.11" x2="253.57" y2="66.57"/><line class="tk on" data-v="11.5" x1="278.24" y1="79.07" x2="276.87" y2="65.14"/><line class="tk mj on" data-v="12" x1="300" y1="96" x2="300" y2="62"/><line class="tk" data-v="12.5" x1="321.76" y1="79.07" x2="323.13" y2="65.14"/><line class="tk u" data-v="13" x1="341.75" y1="90.11" x2="346.43" y2="66.57"/><line class="tk" data-v="13.5" x1="364.44" y1="87.56" x2="368.51" y2="74.16"/><line class="tk u" data-v="14" x1="381.89" y1="102.29" x2="391.08" y2="80.12"/><line class="tk" data-v="14.5" x1="404.65" y1="104.21" x2="411.25" y2="91.87"/><line class="tk u" data-v="15" x1="418.89" y1="122.07" x2="432.23" y2="102.11"/><line class="tk" data-v="15.5" x1="440.84" y1="128.39" x2="449.72" y2="117.57"/><line class="tk u" data-v="16" x1="451.32" y1="148.68" x2="468.29" y2="131.71"/><line class="tk" data-v="16.5" x1="471.61" y1="159.16" x2="482.43" y2="150.28"/><line class="tk u" data-v="17" x1="477.93" y1="181.11" x2="497.89" y2="167.77"/><line class="tk" data-v="17.5" x1="495.79" y1="195.35" x2="508.13" y2="188.75"/><line class="tk mj" data-v="18" x1="488.47" y1="221.93" x2="519.88" y2="208.92"/><line class="tk" data-v="18.5" x1="512.44" y1="235.56" x2="525.84" y2="231.49"/><line class="tk u" data-v="19" x1="509.89" y1="258.25" x2="533.43" y2="253.57"/><line class="tk" data-v="19.5" x1="520.93" y1="278.24" x2="534.86" y2="276.87"/><line class="tk u" data-v="20" x1="514" y1="300" x2="538" y2="300"/><line class="tk" data-v="20.5" x1="520.93" y1="321.76" x2="534.86" y2="323.13"/><line class="tk u" data-v="21" x1="509.89" y1="341.75" x2="533.43" y2="346.43"/><line class="tk" data-v="21.5" x1="512.44" y1="364.44" x2="525.84" y2="368.51"/><line class="tk u" data-v="22" x1="497.71" y1="381.89" x2="519.88" y2="391.08"/><line class="tk" data-v="22.5" x1="495.79" y1="404.65" x2="508.13" y2="411.25"/><line class="tk u" data-v="23" x1="477.93" y1="418.89" x2="497.89" y2="432.23"/><line class="tk" data-v="23.5" x1="471.61" y1="440.84" x2="482.43" y2="449.72"/><line class="tk mj" data-v="24" x1="444.25" y1="444.25" x2="468.29" y2="468.29"/><text class="d-lab" x="120.4" y="430.49" text-anchor="middle" dominant-baseline="middle">0</text><text class="d-lab" x="479.6" y="430.49" text-anchor="middle" dominant-baseline="middle">24</text><g id="sp-marker" transform="translate(300 50)"><circle class="sp-halo" r="10"/><circle class="sp-dot" r="9"/></g></svg>
-        <div class="dial-read">
-          <p class="label dr-top"><span class="ld"></span>Setpoint&nbsp;<span id="sp-val">12</span>&nbsp;/ mo</p>
-          <div class="dr-row">
-            <button class="dc" id="sp-down" type="button" aria-label="Lower the monthly target"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-            <p class="dr-num" aria-live="polite"><span id="cur">12</span><span class="sr"> booked appointments</span></p>
-            <button class="dc" id="sp-up" type="button" aria-label="Raise the monthly target"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-          </div>
-          <p class="dr-unit">booked appointments<br>this month</p>
-          <p class="label dr-state" id="dr-state">Holding at setpoint</p>
+      <div class="wk" id="wk" role="img" aria-label="Example: a week on your calendar filling up with twelve booked appointments">
+        <div class="wk-head" aria-hidden="true">
+          <div><p class="label"><span class="ld"></span>Your calendar</p><b class="wk-title" id="wk-title">Nov 16 – 20</b></div>
+          <p class="wk-count"><b id="wk-n">12</b><small>booked<br>this week</small></p>
+        </div>
+        <div class="wk-bar" id="wk-bar" style="--p:1" aria-hidden="true"><i></i><b></b></div>
+        <div class="wk-meta" aria-hidden="true"><span class="label" id="wk-state">Holding at setpoint</span><span class="label">Setpoint 12 / wk</span></div>
+        <div class="wk-days" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span></div>
+        <div class="wk-body" aria-hidden="true">
+          <div class="wk-hrs"><span style="--k:0">9</span><span style="--k:1">11</span><span style="--k:2">1</span><span style="--k:3">3</span><span style="--k:4">5</span></div>
+          <div class="wk-grid" id="wk-grid"></div>
         </div>
       </div>
       <div class="toasts" id="toasts" aria-hidden="true">
@@ -1517,31 +1525,37 @@ input{font:inherit;color:inherit;margin:0}
     else W.scrollTo({ top: target ? Math.max(0, docTop(target) - off) : 0, behavior: RM ? "auto" : "smooth" });
   });
 
-  /* ---------- Hero dial: a thermostat for booked appointments ---------- */
-  const dial = $("#dial");
-  if (dial) {
-    const tks = $$(".tk", dial).map(el => ({ el, v: parseFloat(el.getAttribute("data-v")) }));
-    const curEl = $("#cur"), spEl = $("#sp-val"), stEl = $("#dr-state"), mk = $("#sp-marker");
-    const up = $("#sp-up"), dn = $("#sp-down"), box = $("#toasts");
-    const MIN = 4, MAX = 24, VMAX = 24;
-    let sp = 12, cur = 12, timer = 0, idle = 0, intro = false, visible = true, bi = 0, ei = 0;
-    const BOOK = [["Consultation", "Oakville", "Thu 10:30"], ["Free quote", "Markham", "Fri 4:00"], ["Discovery call", "Mississauga", "Sat 11:00"], ["Product demo", "Vaughan", "Mon 9:30"], ["Consultation", "Burlington", "Tue 2:00"], ["Second-opinion quote", "Brampton", "Wed 6:30"], ["Strategy call", "Richmond Hill", "Thu 1:00"], ["Free quote", "Hamilton", "Fri 9:00"]];
+  /* ---------- Hero calendar: a week filling up with booked appointments ---------- */
+  const wk = $("#wk");
+  if (wk) {
+    const grid = $("#wk-grid"), nEl = $("#wk-n"), stEl = $("#wk-state"), title = $("#wk-title"), bar = $("#wk-bar"), box = $("#toasts");
+    // [day, start, length] in half-hours from 9:00
+    const BUSY = [[0, 0, 3], [1, 8, 4], [2, 2, 2], [3, 10, 3], [4, 4, 2]];
+    const SLOTS = [[3, 1, 2], [0, 4, 2], [1, 4, 3], [4, 0, 3], [2, 5, 2], [0, 9, 2], [3, 5, 3], [1, 13, 2], [4, 8, 2], [2, 10, 3], [0, 13, 2], [1, 1, 2]];
+    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"], WEEKS = ["Nov 16 – 20", "Nov 23 – 27", "Nov 30 – Dec 4"];
+    const NAMES = ["Dana M.", "Kim R.", "Sam T.", "Priya S.", "Alex W.", "Jordan L.", "Maria G.", "Chris P.", "Noor A.", "Taylor B.", "Omar H.", "Lena K."];
+    const KINDS = ["Consultation", "Free quote", "Discovery call", "Product demo", "Second-opinion quote", "Strategy call"];
+    const CITIES = ["Oakville", "Markham", "Mississauga", "Vaughan", "Burlington", "Brampton", "Richmond Hill", "Hamilton"];
     const EVT = [["Reminder sent", "Dana M. · tomorrow 10:30", "now"], ["Customer report sent", "Ready to buy, 30-day timeline", "now"], ["Called in 0:41", "Quote request · Oakville", "now"], ["Appointment confirmed", "“See you Thursday”", "now"]];
-    const pos = v => { const a = (135 + 270 * v / VMAX) * Math.PI / 180; return [300 + 250 * Math.cos(a), 300 + 250 * Math.sin(a)]; };
-    const draw = v => { for (const t of tks) t.el.classList.toggle("on", t.v <= v + 1e-6); curEl.textContent = String(Math.round(v)); };
-    const place = () => {
-      const p = pos(sp);
-      mk.setAttribute("transform", "translate(" + p[0].toFixed(1) + " " + p[1].toFixed(1) + ")");
-      spEl.textContent = String(sp); up.disabled = sp >= MAX; dn.disabled = sp <= MIN;
+    const TARGET = SLOTS.length;
+    let n = 0, week = 0, timer = 0, visible = true, ei = 0, ti = 0;
+    const clock = r => { const h = 9 + (r >> 1); return ((h + 11) % 12 + 1) + ":" + (r % 2 ? "30" : "00"); };
+    const col = c => week % 2 ? 4 - c : c;
+    const block = (cls, c, r, h) => {
+      const el = d.createElement("div");
+      el.className = "bk " + cls;
+      el.style.setProperty("--c", String(col(c))); el.style.setProperty("--r", String(r)); el.style.setProperty("--h", String(h));
+      grid.appendChild(el);
+      return el;
     };
     let toasts = $$(".toast", box).sort((a, b) => parseFloat(a.style.getPropertyValue("--i")) - parseFloat(b.style.getPropertyValue("--i")));
     const layout = () => toasts.forEach((t, i) => { t.style.setProperty("--i", String(i)); t.style.zIndex = String(20 - i); t.classList.toggle("back", i > 0); });
-    const push = (title, line, time, book) => {
+    const push = (head, line, time, book) => {
       if (RM) return;
       const el = d.createElement("div");
       el.className = "toast enter" + (book ? " is-book" : "");
       el.innerHTML = '<span class="app-ic"><svg viewBox="0 0 208 262"><use href="#sp-mark"/></svg></span><span class="tt"><b></b><span></span></span><time></time>';
-      el.querySelector("b").textContent = title;
+      el.querySelector("b").textContent = head;
       el.querySelector(".tt span").textContent = line;
       el.querySelector("time").textContent = time;
       box.appendChild(el); toasts.unshift(el); layout();
@@ -1549,47 +1563,39 @@ input{font:inherit;color:inherit;margin:0}
       el.classList.remove("enter");
       while (toasts.length > 3) { const o = toasts.pop(); o.classList.add("leave"); setTimeout(() => o.remove(), 700); }
     };
-    const setState = s => { stEl.textContent = s; dial.classList.toggle("holding", s === "Holding at setpoint"); };
-    const schedIdle = () => {
-      clearTimeout(idle);
-      idle = setTimeout(() => {
-        if (visible && !d.hidden) { const e = EVT[ei++ % EVT.length]; push(e[0], e[1], e[2], false); }
-        schedIdle();
-      }, 4400);
+    const show = () => { nEl.textContent = String(n); bar.style.setProperty("--p", String(n / TARGET)); };
+    const setState = t => { stEl.textContent = t; wk.classList.toggle("holding", t === "Holding at setpoint"); };
+    const book = () => {
+      const [c, r, h] = SLOTS[n], last = $(".bk.new", grid), el = block("on new", c, r, h);
+      if (last) last.classList.remove("new");
+      el.innerHTML = "<b></b><small></small>";
+      el.firstChild.textContent = NAMES[ti % NAMES.length];
+      el.lastChild.textContent = clock(r);
+      push("Appointment booked", KINDS[ti % KINDS.length] + " · " + CITIES[ti % CITIES.length], DAYS[col(c)] + " " + clock(r), true);
+      n++; ti++; show();
     };
-    const stepTo = () => {
-      clearTimeout(timer);
-      if (cur === sp) { setState("Holding at setpoint"); schedIdle(); return; }
-      clearTimeout(idle);
-      if (cur < sp) {
-        cur++; draw(cur);
-        const b = BOOK[bi++ % BOOK.length]; push("Appointment booked", b[0] + " · " + b[1], b[2], true);
-        setState("Booking appointments"); timer = setTimeout(stepTo, 640);
-      } else { cur--; draw(cur); setState("Adjusting"); timer = setTimeout(stepTo, 150); }
+    const fill = () => { grid.textContent = ""; n = 0; show(); title.textContent = WEEKS[week % WEEKS.length]; for (const b of BUSY) block("busy", b[0], b[1], b[2]); };
+    const wait = (fn, ms) => { clearTimeout(timer); timer = setTimeout(fn, ms); };
+    const hold = left => {
+      if (!visible || d.hidden) return wait(() => hold(left), 800);
+      if (!left) return turn();
+      const e = EVT[ei++ % EVT.length]; push(e[0], e[1], e[2], false);
+      wait(() => hold(left - 1), 3600);
     };
-    const change = delta => {
-      const n = clamp(sp + delta, MIN, MAX);
-      if (n === sp) return;
-      sp = n; place();
-      if (RM) { cur = sp; draw(cur); setState("Holding at setpoint"); return; }
-      if (!intro) stepTo();
+    const turn = () => {
+      $$(".bk", grid).forEach((el, k) => { el.style.setProperty("--k", String(k)); el.classList.add("out"); });
+      wait(() => { week++; fill(); setState("Booking appointments"); wait(step, 700); }, 1100);
     };
-    up.addEventListener("click", () => change(1));
-    dn.addEventListener("click", () => change(-1));
-    place();
-    if (RM) { draw(sp); setState("Holding at setpoint"); }
-    else {
-      intro = true; cur = 0; draw(0); setState("Booking appointments");
-      const target = sp - 3, t0 = performance.now() + 500, D = 1350;
-      const climb = now => {
-        const p = clamp((now - t0) / D, 0, 1), e = 1 - Math.pow(1 - p, 3);
-        draw(Math.floor(e * target * 2) / 2);
-        if (p < 1) requestAnimationFrame(climb);
-        else { intro = false; cur = Math.min(target, sp); draw(cur); timer = setTimeout(stepTo, 450); }
-      };
-      requestAnimationFrame(climb);
-    }
-    if ("IntersectionObserver" in W) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(dial);
+    const step = () => {
+      if (!visible || d.hidden) return wait(step, 800);
+      book();
+      if (n < TARGET) wait(step, n < 4 ? 480 : 1150);
+      else { const l = $(".bk.new", grid); setState("Holding at setpoint"); wait(() => { l && l.classList.remove("new"); hold(2); }, 3200); }
+    };
+    fill();
+    if (RM) { while (n < TARGET) book(); $(".bk.new", grid).classList.remove("new"); setState("Holding at setpoint"); }
+    else { setState("Booking appointments"); wait(step, 900); }
+    if ("IntersectionObserver" in W) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(wk);
   }
 
   /* ---------- The problem: words light up as you read ---------- */
@@ -1755,9 +1761,32 @@ input{font:inherit;color:inherit;margin:0}
       try { return new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(a); }
       catch (e) { return a.join(", "); }
     };
-    const finish = () => {
-      // Not connected yet: send these answers to the GoHighLevel form or webhook when the site is hosted.
+    // Setpoint CRM lead webhook (Settings → Integrations → Lead webhook).
+    const HOOK = "";
+    const picked = n => { const i = $(`input[name="${n}"]:checked`, form); return i ? i.value : ""; };
+    const send = areas => {
+      const body = new URLSearchParams({
+        name: val("fname"), phone: val("phone"), email: val("email"),
+        city: areas.join(", "), source: "setpoint.agency", ad_name: "Market check form",
+        consent: $(".consent span:last-child", form).textContent.trim(),
+        company: val("company"), service_areas: areas.join(", "),
+        yearly_revenue: picked("revenue"), extra_customers_per_week: picked("capacity"),
+      });
+      if (!HOOK) return Promise.resolve();
+      // The CRM sends no CORS headers, so the reply can't be read; a network failure still rejects.
+      return fetch(HOOK, { method: "POST", mode: "no-cors", body, keepalive: true });
+    };
+    let sending = false;
+    const finish = async () => {
+      if (sending) return;
       const areas = $$('input[name="area"]:checked', form).map(i => i.value);
+      sending = true; next.disabled = true; $(".t", next).textContent = "Sending…";
+      try { await send(areas); }
+      catch (e) {
+        err.textContent = "That didn't go through. Check your connection and try again.";
+        $(".t", next).textContent = "Check my market"; return;
+      }
+      finally { sending = false; next.disabled = false; }
       $("[data-fname]", form).textContent = val("fname").split(/\s+/)[0] || "there";
       $("[data-areas]", form).textContent = listFmt(areas);
       $("#mf-body").hidden = true; $("#mf-done").hidden = false;
